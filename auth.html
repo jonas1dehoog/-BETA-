@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BonusBuyTracker – Login / Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Neon glows -->
+  <div class="glow-orbit glow-orbit-1"></div>
+  <div class="glow-orbit glow-orbit-2"></div>
+
+  <!-- NAV BAR -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">BonusBuy<span>Tracker</span></span>
+    </div>
+    <nav class="nav">
+      <!-- Shown only when logged OUT -->
+      <a href="auth.html" id="nav-auth-link"></a>
+    
+      <!-- Main app pages -->
+      <a href="index.html">Dashboard</a>
+      <a href="sessions.html">Session History</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <!-- Profile stays far right as requested -->
+      <a href="profile.html" id="nav-profile-link">Profile</a>
+    </nav>
+    
+    
+    
+  </header>
+
+  <main>
+    <div class="auth-container fade-in">
+
+      <!-- LOGIN FORM -->
+      <div id="login-section">
+        <h2>Login</h2>
+        <form id="login-form">
+          <div class="form-row">
+            <label>Email</label>
+            <input type="email" id="login-email" required />
+          </div>
+
+          <div class="form-row">
+            <label>Password</label>
+            <input type="password" id="login-password" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary full-width">Login</button>
+
+          <div id="login-message" class="auth-message"></div>
+        </form>
+
+        <div class="auth-toggle">
+          Don't have an account?
+          <a href="#" id="show-signup">Sign Up</a>
+        </div>
+      </div>
+
+      <!-- SIGNUP FORM -->
+<div id="signup-section" class="hidden">
+  <h2>Create Account</h2>
+  <form id="signup-form">
+    <div class="form-row">
+      <label>Email</label>
+      <input type="email" id="signup-email" required />
+    </div>
+
+    <div class="form-row">
+      <label>Password</label>
+      <input type="password" id="signup-password" required />
+    </div>
+
+    <div class="form-row">
+      <label>Username</label>
+      <input
+        type="text"
+        id="signup-username"
+        placeholder="e.g. NukeGrinder"
+        required
+      />
+      <p class="hint">This will show on the leaderboard.</p>
+    </div>
+
+    <div class="form-row">
+      <label>Signup Code</label>
+      <input
+        type="text"
+        id="signup-code"
+        placeholder="Enter invite code"
+        required
+      />
+      <p class="hint">Required to create an account</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary full-width">Sign Up</button>
+
+    <div id="signup-message" class="auth-message"></div>
+  </form>
+
+  <div class="auth-toggle">
+    Already have an account?
+    <a href="#" id="show-login">Log In</a>
+  </div>
+</div>
+
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>
+      BonusBuyTracker © <span id="year"></span> • Secure Login with Supabase Auth.
+    </p>
+  </footer>
+
+  <!-- SUPABASE -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <!-- AUTH LOGIC -->
+  <script src="auth.js"></script>
+  <script src="nav.js"></script>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>

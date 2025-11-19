@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BonusBuyTracker – Home</title>
+  <link rel="icon" type="jpg" sizes="32x32" href="logo.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Glow Effects -->
+  <div class="glow-orbit glow-orbit-1"></div>
+  <div class="glow-orbit glow-orbit-2"></div>
+
+  <!-- NAV BAR -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">BonusBuy<span>Tracker</span></span>
+    </div>
+    <nav class="nav">
+      <!-- Shown only when logged OUT -->
+      <a href="auth.html" id="nav-auth-link">Login / Sign Up</a>
+    
+      <!-- Main app pages -->
+      <a href="index.html">Dashboard</a>
+      <a href="sessions.html">Session History</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    
+      <!-- Username badge + logout (shown only when logged IN) -->
+      <span id="nav-username" class="nav-username hidden"></span>
+      <button id="nav-logout" class="btn btn-ghost small hidden">Log out</button>
+    
+      <!-- Profile stays far right as requested -->
+      <a href="profile.html" id="nav-profile-link">Profile</a>
+    </nav>
+    
+    
+    
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero">
+      <h1>The Ultimate Bonus Buy Tracker</h1>
+      <p>
+        Track your bonus buys, calculate session profits, analyze performance,
+        and monitor your all-time stats — all in a clean, dark neon interface.
+      </p>
+
+      <div class="cta-buttons">
+        <a href="auth.html" class="btn btn-primary">Get Started</a>
+        <a href="auth.html" class="btn btn-ghost">Sign In</a>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+      <div class="feature-card">
+        <h3>Track Bonus Buys</h3>
+        <p>
+          Log buy cost, win amount, providers, multipliers, and more. Every buy
+          is saved securely to your account.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Session Management</h3>
+        <p>
+          Create multiple sessions, switch between hunts, view history, and
+          calculate total net profit instantly.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Advanced Analytics</h3>
+        <p>
+          Visualize your performance with charts: profit per session, return
+          distribution, top providers, big wins, and more.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================= -->
+<!--      PRODUCT PREVIEW          -->
+<!-- ============================= -->
+
+<section class="preview-section">
+  <h2>See What’s Inside</h2>
+  <p class="subtitle">Powerful analytics, real-time dashboards, and clean performance tracking.</p>
+
+  <div class="preview-grid">
+    
+    <!-- Dashboard Preview -->
+    <div class="preview-card">
+      <img src="dashboard.jpg" alt="Dashboard Preview">
+      <h3>Real-Time Dashboard</h3>
+      <p>Track all your bonus buys with live stats, profit tracking, and session management.</p>
+    </div>
+
+    <!-- Analytics Preview -->
+    <div class="preview-card">
+      <img src="analytics.jpg" alt="Analytics Preview">
+      <h3>Advanced Analytics</h3>
+      <p>Dive deep into profit-over-time, volatility, hourly performance, and per-game metrics.</p>
+    </div>
+
+    <div class="preview-card">
+      <img src="leaderboard.jpg" alt="Dashboard Preview">
+      <h3>Live User Leaderboard</h3>
+      <p>View the most profitable streamers and their session history.</p>
+    </div>
+
+  </div>
+</section>
+  </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <p>
+        BonusBuyTracker © <span id="year"></span> • Dark Neon Gambling Analytics.
+        Gamble Responsibly.
+      </p>
+    </footer>
+  
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  
+    <!-- Supabase: redirect logged-in users to Dashboard -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://laomecxehnfwikhhyehx.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxhb21lY3hlaG5md2lraGh5ZWh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1MjA4ODcsImV4cCI6MjA3OTA5Njg4N30.Y1uw52DWGD2NSyqHcNqK-epk1gYPGwiCrRjOvfSwGMQ";
+  
+      const supabaseHome = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+  
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const { data, error } = await supabaseHome.auth.getUser();
+          if (!error && data && data.user) {
+            // User is logged in → send them to the dashboard
+            window.location.href = "index.html";
+          }
+        } catch (err) {
+          console.error("Error checking auth on home page:", err);
+        }
+      });
+    </script>
+    <script src="nav.js"></script>
+
+</body>
+</html>

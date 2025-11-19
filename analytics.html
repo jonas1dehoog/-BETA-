@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Analytics</title>
+  <link rel="icon" type="image/jpeg" sizes="32x32" href="logo.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Main styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Page script -->
+  <script defer src="analytics.js"></script>
+</head>
+<body>
+  <script>
+    // Simple dashboard guard:
+    // If there's no saved auth in localStorage, send user to home.html
+    (function () {
+      try {
+        const raw = localStorage.getItem("bbt_auth");
+        if (!raw) {
+          window.location.href = "home.html";
+          return;
+        }
+
+        const tokens = JSON.parse(raw);
+        if (!tokens.access_token || !tokens.refresh_token) {
+          localStorage.removeItem("bbt_auth");
+          window.location.href = "home.html";
+          return;
+        }
+      } catch (err) {
+        console.error("Error reading saved auth:", err);
+        localStorage.removeItem("bbt_auth");
+        window.location.href = "home.html";
+      }
+    })();
+  </script>
+  <!-- Global Nav -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">BonusBuy<span>Tracker</span></span>
+    </div>
+    <nav class="nav">
+      <!-- Shown only when logged OUT -->
+      <a href="auth.html" id="nav-auth-link"></a>
+    
+      <!-- Main app pages -->
+      <a href="index.html">Dashboard</a>
+      <a href="sessions.html">Session History</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <!-- Profile stays far right as requested -->
+      <a href="profile.html" id="nav-profile-link">Profile</a>
+    </nav>
+    
+    
+    
+  </header>
+
+  <main class="page analytics-page">
+    <h1>Advanced Analytics</h1>
+
+    <!-- PRIMARY SUMMARY CARDS -->
+    <section class="analytics-summary primary-summary">
+      <div class="card">
+        <p class="label">Total Sessions</p>
+        <p id="total-sessions" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Total Wagered</p>
+        <p id="total-wagered" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Net Profit</p>
+        <p id="net-profit" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Win Rate</p>
+        <p id="win-rate" class="value">-</p>
+      </div>
+    </section>
+
+    <!-- ADVANCED METRICS -->
+    <section class="analytics-summary advanced-summary">
+      <div class="card">
+        <p class="label">Avg Bet / Session</p>
+        <p id="avg-bet" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Avg Profit / Session</p>
+        <p id="avg-profit-session" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Best Win</p>
+        <p id="best-win" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Worst Loss</p>
+        <p id="worst-loss" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Longest Win Streak</p>
+        <p id="longest-win-streak" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Longest Loss Streak</p>
+        <p id="longest-loss-streak" class="value">-</p>
+      </div>
+      <div class="card">
+        <p class="label">Profit Volatility (σ)</p>
+        <p id="volatility" class="value">-</p>
+      </div>
+    </section>
+
+    <!-- CHARTS GRID -->
+    <section class="analytics-charts">
+      <div class="chart-card">
+        <h2>Profit Over Time</h2>
+        <div class="chart-wrapper">
+          <canvas id="profitOverTimeChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2>Cumulative Bankroll</h2>
+        <div class="chart-wrapper">
+          <canvas id="cumulativeProfitChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2>Profit by Game</h2>
+        <div class="chart-wrapper">
+          <canvas id="profitByGameChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2>Profit by Weekday</h2>
+        <div class="chart-wrapper">
+          <canvas id="weekdayChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2>Profit by Hour of Day</h2>
+        <div class="chart-wrapper">
+          <canvas id="hourChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- PER-GAME SUMMARY TABLE -->
+    <section class="analytics-table">
+      <h2>Per-Game Summary</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Game</th>
+            <th>Sessions</th>
+            <th>Total Wagered</th>
+            <th>Net Profit</th>
+            <th>Avg Profit</th>
+            <th>Win Rate</th>
+          </tr>
+        </thead>
+        <tbody id="game-summary-body">
+          <!-- Filled by analytics.js -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- SESSION LOG TABLE -->
+    <section class="analytics-table">
+      <h2>Session History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Game</th>
+            <th>Wagered</th>
+            <th>Net Profit</th>
+          </tr>
+        </thead>
+        <tbody id="session-list-body">
+          <!-- Filled by analytics.js -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

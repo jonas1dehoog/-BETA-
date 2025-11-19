@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BonusBuyTracker – Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <script>
+    // Simple dashboard guard:
+    // If there's no saved auth in localStorage, send user to home.html
+    (function () {
+      try {
+        const raw = localStorage.getItem("bbt_auth");
+        if (!raw) {
+          window.location.href = "home.html";
+          return;
+        }
+
+        const tokens = JSON.parse(raw);
+        if (!tokens.access_token || !tokens.refresh_token) {
+          localStorage.removeItem("bbt_auth");
+          window.location.href = "home.html";
+          return;
+        }
+      } catch (err) {
+        console.error("Error reading saved auth:", err);
+        localStorage.removeItem("bbt_auth");
+        window.location.href = "home.html";
+      }
+    })();
+  </script>
+  
+  <!-- Neon glows -->
+  <div class="glow-orbit glow-orbit-1"></div>
+  <div class="glow-orbit glow-orbit-2"></div>
+
+  <!-- NAV BAR -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">BonusBuy<span>Tracker</span></span>
+    </div>
+
+    <nav class="nav">
+      <!-- Shown only when logged OUT -->
+      <a href="auth.html" id="nav-auth-link">Login / Sign Up</a>
+    
+      <!-- Main app pages -->
+      <a href="index.html">Dashboard</a>
+      <a href="sessions.html">Session History</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <!-- Profile stays far right as requested -->
+      <a href="profile.html" id="nav-profile-link">Profile</a>
+    </nav>
+    
+    
+    
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="fade-in">
+    <section class="section">
+      <div class="section-header">
+        <h2>Leaderboard</h2>
+        <p>Top performers ranked by profit, big wins, and consistency.</p>
+      </div>
+
+      <div class="card table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>User</th>
+              <th>Net Profit</th>
+              <th>Total Wins</th>
+              <th>Total Buys</th>
+              <th>Best Multi</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-table">
+            <!-- Rows injected by leaderboard.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>BonusBuyTracker © <span id="year"></span> — Leaderboard</p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear().toString();
+  </script>
+
+  <!-- JS -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="leaderboard.js"></script>
+  <script src="nav.js"></script>
+    
+</body>
+</html>

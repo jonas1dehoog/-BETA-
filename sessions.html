@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BonusBuyTracker – Session History</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <script>
+    // Simple dashboard guard:
+    // If there's no saved auth in localStorage, send user to home.html
+    (function () {
+      try {
+        const raw = localStorage.getItem("bbt_auth");
+        if (!raw) {
+          window.location.href = "home.html";
+          return;
+        }
+
+        const tokens = JSON.parse(raw);
+        if (!tokens.access_token || !tokens.refresh_token) {
+          localStorage.removeItem("bbt_auth");
+          window.location.href = "home.html";
+          return;
+        }
+      } catch (err) {
+        console.error("Error reading saved auth:", err);
+        localStorage.removeItem("bbt_auth");
+        window.location.href = "home.html";
+      }
+    })();
+  </script>
+
+  <!-- Neon Background -->
+  <div class="glow-orbit glow-orbit-1"></div>
+  <div class="glow-orbit glow-orbit-2"></div>
+
+  <!-- NAV BAR -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">BonusBuy<span>Tracker</span></span>
+    </div>
+    <nav class="nav">
+      <!-- Shown only when logged OUT -->
+      <a href="auth.html" id="nav-auth-link"></a>
+    
+      <!-- Main app pages -->
+      <a href="index.html">Dashboard</a>
+      <a href="sessions.html">Session History</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <!-- Profile stays far right as requested -->
+      <a href="profile.html" id="nav-profile-link">Profile</a>
+    </nav>
+    
+    
+    
+  </header>
+
+  <!-- MAIN -->
+  <main class="fade-in">
+    <section class="section">
+      <div class="section-header">
+        <h2>Session History</h2>
+        <p>Every hunt you’ve logged, with complete performance stats.</p>
+      </div>
+
+      <div class="flex-row" style="margin-bottom: 1rem;">
+        <button id="btn-export" class="btn">Export Sessions</button>
+
+        <label class="btn file-label">
+          Import Sessions
+          <input type="file" id="import-file" accept=".json" hidden />
+        </label>
+      </div>
+
+      <div id="session-history-list" class="session-list"></div>
+    </section>
+  </main>
+
+  <!-- DELETE SESSION MODAL -->
+  <div id="delete-session-modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="delete-session-modal">✕</button>
+      <h3>Delete Session?</h3>
+      <p>You are about to permanently delete this entire session and all its bonus buys.</p>
+      <p>This action cannot be undone.</p>
+
+      <div class="modal-actions">
+        <button class="btn btn-ghost" data-close-modal="delete-session-modal">Cancel</button>
+        <button id="confirm-delete-session-history" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>BonusBuyTracker © <span id="year"></span> — Session History</p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="sessions.js"></script>
+  <script src="nav.js"></script>
+    
+</body>
+</html>

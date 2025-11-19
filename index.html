@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BonusBuyTracker – Dashboard</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <script>
+    // Simple dashboard guard:
+    // If there's no saved auth in localStorage, send user to home.html
+    (function () {
+      try {
+        const raw = localStorage.getItem("bbt_auth");
+        if (!raw) {
+          window.location.href = "home.html";
+          return;
+        }
+
+        const tokens = JSON.parse(raw);
+        if (!tokens.access_token || !tokens.refresh_token) {
+          localStorage.removeItem("bbt_auth");
+          window.location.href = "home.html";
+          return;
+        }
+      } catch (err) {
+        console.error("Error reading saved auth:", err);
+        localStorage.removeItem("bbt_auth");
+        window.location.href = "home.html";
+      }
+    })();
+  </script>
+  <!-- Neon background glows -->
+  <div class="glow-orbit glow-orbit-1"></div>
+  <div class="glow-orbit glow-orbit-2"></div>
+
+  <!-- NAV BAR -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">BonusBuy<span>Tracker</span></span>
+    </div>
+    <nav class="nav">
+      <!-- Shown only when logged OUT -->
+      <a href="auth.html" id="nav-auth-link"></a>
+    
+      <!-- Main app pages -->
+      <a href="index.html">Dashboard</a>
+      <a href="sessions.html">Session History</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <!-- Profile stays far right as requested -->
+      <a href="profile.html" id="nav-profile-link">Profile</a>
+    </nav>
+    
+    
+    
+  </header>
+
+  <main id="dashboard" class="fade-in">
+
+    <!-- SESSION CONTROL BAR -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Dashboard</h2>
+        <p>Track your bonus buys and view real-time session stats.</p>
+      </div>
+
+      <div class="card">
+        <div class="flex-between">
+
+          <!-- Session dropdown -->
+          <div style="flex: 1; max-width: 300px;">
+            <label class="hint">Active Session</label>
+            <select id="session-select"></select>
+          </div>
+
+          <!-- New Session Button -->
+          <button id="new-session-btn" class="btn btn-primary">
+            New Session
+          </button>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SUMMARY STATS -->
+    <section class="section">
+      <div class="dashboard-summary">
+        <div class="summary-box">
+          <span class="label">Total Buys</span>
+          <span id="stat-total-buys" class="value">0</span>
+        </div>
+
+        <div class="summary-box">
+          <span class="label">Total Cost</span>
+          <span id="stat-total-cost" class="value">$0.00</span>
+        </div>
+
+        <div class="summary-box">
+          <span class="label">Total Win</span>
+          <span id="stat-total-win" class="value">$0.00</span>
+        </div>
+
+        <div class="summary-box">
+          <span class="label">Net Profit</span>
+          <span id="stat-net" class="value">$0.00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADD BONUS BUY FORM -->
+    <section class="section">
+      <div class="card">
+        <h3>Add Bonus Buy</h3>
+
+        <form id="bonus-form">
+          <div class="grid-3">
+
+            <!-- GAME -->
+            <div class="form-row">
+              <label>Game</label>
+              <input
+                type="text"
+                id="game"
+                placeholder="Enter slot name"
+                autocomplete="off"
+                required
+              />
+              <div id="game-suggestions" class="suggestions hidden"></div>
+            </div>
+
+            <!-- COST -->
+            <div class="form-row">
+              <label>Cost</label>
+              <input type="number" id="cost" step="0.01" required />
+            </div>
+
+            <!-- WIN (optional) -->
+            <div class="form-row">
+              <label>Win (optional)</label>
+              <input
+                type="number"
+                id="win"
+                step="0.01"
+                placeholder="Add later"
+              />
+            </div>
+
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary full-width"
+            style="margin-top: 1rem;"
+          >
+            Add Buy
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- BONUS BUYS TABLE -->
+    <section class="section">
+      <div class="card table-card">
+        <div class="table-header flex-between">
+          <h3>Bonus Buys</h3>
+          <button
+            id="delete-session-btn"
+            class="btn btn-ghost small modal-confirm-delete"
+          >
+            Delete Session
+          </button>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Game</th>
+                <th>Cost</th>
+                <th>Win</th>
+                <th>Profit</th>
+                <th>Multi</th>
+                <th>Big Win</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bonus-table">
+              <!-- rows injected by dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>
+      BonusBuyTracker © <span id="year"></span> — Dashboard
+    </p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+  <!-- SCRIPTS -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="nav.js"></script>
+  <script src="slots.js"></script>
+  <script src="dashboard.js"></script>
+  
+</body>
+</html>

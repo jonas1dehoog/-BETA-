@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BonusBuyTracker – Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <script>
+    // Simple dashboard guard:
+    // If there's no saved auth in localStorage, send user to home.html
+    (function () {
+      try {
+        const raw = localStorage.getItem("bbt_auth");
+        if (!raw) {
+          window.location.href = "home.html";
+          return;
+        }
+
+        const tokens = JSON.parse(raw);
+        if (!tokens.access_token || !tokens.refresh_token) {
+          localStorage.removeItem("bbt_auth");
+          window.location.href = "home.html";
+          return;
+        }
+      } catch (err) {
+        console.error("Error reading saved auth:", err);
+        localStorage.removeItem("bbt_auth");
+        window.location.href = "home.html";
+      }
+    })();
+  </script>
+  
+  <!-- Glowing background -->
+  <div class="glow-orbit glow-orbit-1"></div>
+  <div class="glow-orbit glow-orbit-2"></div>
+
+  <!-- NAV BAR -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">◆</span>
+      <span class="logo-text">BonusBuy<span>Tracker</span></span>
+    </div>
+
+    <nav class="nav">
+      <!-- Shown only when logged OUT -->
+      <a href="auth.html" id="nav-auth-link"></a>
+    
+      <!-- Main app pages -->
+      <a href="index.html">Dashboard</a>
+      <a href="sessions.html">Session History</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <!-- Profile stays far right as requested -->
+      <a href="profile.html" id="nav-profile-link">Profile</a>
+    </nav>
+    
+    
+    
+  </header>
+
+  <!-- MAIN -->
+  <main class="fade-in">
+    <section class="section">
+      <div class="section-header">
+        <h2>Your Profile</h2>
+        <p>Account details and aggregate stats.</p>
+      </div>
+
+      <div class="grid-2">
+        <!-- ACCOUNT CARD -->
+        <div class="card">
+          <h3>Account</h3>
+          <p class="hint">Email: <span id="profile-email">Loading...</span></p>
+          <p class="hint">User ID: <span id="profile-user-id">Loading...</span></p>
+          <button id="profile-logout" class="btn btn-ghost" style="margin-top: 1rem;">
+            Log out
+          </button>
+          <p class="hint" style="margin-top: 0.25rem;">
+            You’ll be signed out of BonusBuyTracker and sent back to the landing page.
+          </p>
+        </div>
+
+        <!-- OVERVIEW CARD -->
+        <div class="card">
+          <h3>Overview</h3>
+          <div class="stats-grid">
+            <div class="stat">
+              <span class="label">Total Sessions</span>
+              <span class="value" id="profile-total-sessions">0</span>
+            </div>
+            <div class="stat">
+              <span class="label">Total Buys</span>
+              <span class="value" id="profile-total-buys">0</span>
+            </div>
+            <div class="stat">
+              <span class="label">All-time Net</span>
+              <span class="value" id="profile-alltime-net">$0.00</span>
+            </div>
+            <div class="stat">
+              <span class="label">Best Return</span>
+              <span class="value" id="profile-top-multi">0x</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOP PROVIDERS -->
+        <div class="card">
+          <h3>Most Played Providers (Top 5)</h3>
+          <ul class="bullet-list" id="profile-top-providers">
+            <li>Loading...</li>
+          </ul>
+        </div>
+
+        <!-- SESSION SUMMARY -->
+        <div class="card">
+          <h3>Session Summary</h3>
+          <p class="hint">Highest and lowest performing sessions.</p>
+          <ul class="bullet-list" id="profile-session-summary">
+            <li>Loading...</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>BonusBuyTracker © <span id="year"></span> — Your Stats Dashboard.</p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+  <!-- JS -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="slots.js"></script>
+  <script src="profile.js"></script>
+    
+
+</body>
+</html>
